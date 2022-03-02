@@ -66,8 +66,9 @@ class CityForm extends FormAbstract
                 'label'      => trans('plugins/location::city.country'),
                 'label_attr' => ['class' => 'control-label required'],
                 'attr'       => [
-                    'id'    => 'country_id',
-                    'class' => 'form-control select-search-full',
+                    'id'        => 'country_id',
+                    'class'     => 'form-control select-search-full',
+                    'data-type' => 'country',
                 ],
                 'choices'    => [0 => trans('plugins/location::city.select_country')] + $countries,
             ])
@@ -75,10 +76,10 @@ class CityForm extends FormAbstract
                 'label'      => trans('plugins/location::city.state'),
                 'label_attr' => ['class' => 'control-label'],
                 'attr'       => [
-                    'id'               => 'state_id',
-                    'data-url'         => route('ajax.states-by-country'),
-                    'data-placeholder' => trans('plugins/location::city.select_state'),
-                    'class'            => 'form-control select-search-full',
+                    'id'        => 'state_id',
+                    'data-url'  => route('ajax.states-by-country'),
+                    'class'     => 'form-control select-search-full',
+                    'data-type' => 'state',
                 ],
                 'choices'    => ($this->getModel()->state_id ?
                         [

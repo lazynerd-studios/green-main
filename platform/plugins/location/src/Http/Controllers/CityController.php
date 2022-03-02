@@ -5,6 +5,7 @@ namespace Botble\Location\Http\Controllers;
 use Botble\Base\Events\BeforeEditContentEvent;
 use Botble\Location\Http\Requests\CityRequest;
 use Botble\Location\Http\Resources\CityResource;
+use Botble\Location\Models\City;
 use Botble\Location\Repositories\Interfaces\CityInterface;
 use Botble\Base\Http\Controllers\BaseController;
 use Illuminate\Contracts\View\Factory;
@@ -177,8 +178,9 @@ class CityController extends BaseController
             ],
             'select'    => ['cities.id', 'cities.name'],
             'take'      => 10,
-
         ]);
+
+        $data->prepend(new City(['id' => 0, 'name' => trans('plugins/location::city.select_city')]));
 
         return $response->setData(CityResource::collection($data));
     }
@@ -196,6 +198,8 @@ class CityController extends BaseController
             ],
             'select'    => ['cities.id', 'cities.name'],
         ]);
+
+        $data->prepend(new City(['id' => 0, 'name' => trans('plugins/location::city.select_city')]));
 
         return $response->setData(CityResource::collection($data));
     }

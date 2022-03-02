@@ -5,6 +5,7 @@ namespace Botble\Location\Http\Controllers;
 use Botble\Base\Events\BeforeEditContentEvent;
 use Botble\Location\Http\Requests\StateRequest;
 use Botble\Location\Http\Resources\StateResource;
+use Botble\Location\Models\State;
 use Botble\Location\Repositories\Interfaces\StateInterface;
 use Botble\Base\Http\Controllers\BaseController;
 use Illuminate\Contracts\View\Factory;
@@ -177,8 +178,9 @@ class StateController extends BaseController
             ],
             'select'    => ['states.id', 'states.name'],
             'take'      => 10,
-
         ]);
+
+        $data->prepend(new State(['id' => 0, 'name' => trans('plugins/location::city.select_state')]));
 
         return $response->setData(StateResource::collection($data));
     }
@@ -195,6 +197,8 @@ class StateController extends BaseController
             ],
             'select'    => ['states.id', 'states.name'],
         ]);
+
+        $data->prepend(new State(['id' => 0, 'name' => trans('plugins/location::city.select_state')]));
 
         return $response->setData(StateResource::collection($data));
     }

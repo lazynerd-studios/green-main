@@ -11,7 +11,7 @@
                     <div class="custom-checkbox">
                         <label>
                             <input class="form-control product-filter-item" type="checkbox" name="attributes[]" value="{{ $attribute->id }}" {{ in_array($attribute->id, $selected) ? 'checked' : '' }}>
-                            <span style="{{ $attribute->image ? 'background-image: url(' . RvMedia::getImageUrl($attribute->image) . ');' : 'background-color: ' . ($attribute->color ?: '#000') . ';' }}"></span>
+			    <span style="{{ $attribute->getAttributeStyle() }}"></span>
                         </label>
                     </div>
                 </li>

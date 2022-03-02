@@ -97,7 +97,7 @@
                     <div class="form-group mb-3 @if ($errors->has('address.country')) has-error @endif">
                         <div class="select--arrow">
                             <select name="address[country]" class="form-control address-control-item address-control-item-required" id="address_country" data-type="country">
-                                @foreach(['' => __('Select country...')] + EcommerceHelper::getAvailableCountries() as $countryCode => $countryName)
+                                @foreach(EcommerceHelper::getAvailableCountries() as $countryCode => $countryName)
                                     <option value="{{ $countryCode }}" @if (old('address.country', Arr::get($sessionCheckoutData, 'country')) == $countryCode) selected @endif>{{ $countryName }}</option>
                                 @endforeach
                             </select>
@@ -114,7 +114,7 @@
                 <div class="form-group mb-3 @if ($errors->has('address.state')) has-error @endif">
                     @if (EcommerceHelper::loadCountriesStatesCitiesFromPluginLocation())
                         <div class="select--arrow">
-                            <select name="address[state]" class="form-control address-control-item address-control-item-required" id="address_state" data-type="state" data-placeholder="{{ __('Select state...') }}" data-url="{{ route('ajax.states-by-country') }}">
+                            <select name="address[state]" class="form-control address-control-item address-control-item-required" id="address_state" data-type="state" data-url="{{ route('ajax.states-by-country') }}">
                                 <option value="">{{ __('Select state...') }}</option>
                                 @if (old('address.country', Arr::get($sessionCheckoutData, 'country')))
                                     @foreach(EcommerceHelper::getAvailableStatesByCountry(old('address.country', Arr::get($sessionCheckoutData, 'country'))) as $stateId => $stateName)
@@ -135,7 +135,7 @@
                 <div class="form-group  @if ($errors->has('address.city')) has-error @endif">
                     @if (EcommerceHelper::loadCountriesStatesCitiesFromPluginLocation())
                         <div class="select--arrow">
-                            <select name="address[city]" class="form-control address-control-item address-control-item-required" id="address_city" data-type="city" data-placeholder="{{ __('Select city...') }}" data-url="{{ route('ajax.cities-by-state') }}">
+                            <select name="address[city]" class="form-control address-control-item address-control-item-required" id="address_city" data-type="city" data-url="{{ route('ajax.cities-by-state') }}">
                                 <option value="">{{ __('Select city...') }}</option>
                                 @if (old('address.state', Arr::get($sessionCheckoutData, 'state')))
                                     @foreach(EcommerceHelper::getAvailableCitiesByState(old('address.state', Arr::get($sessionCheckoutData, 'state'))) as $cityId => $cityName)

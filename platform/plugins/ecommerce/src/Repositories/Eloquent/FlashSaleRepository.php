@@ -8,6 +8,9 @@ use Botble\Support\Repositories\Eloquent\RepositoriesAbstract;
 
 class FlashSaleRepository extends RepositoriesAbstract implements FlashSaleInterface
 {
+    /**
+     * {@inheritDoc}
+     */
     public function getAvailableFlashSales(array $with = [])
     {
         $data = $this->model

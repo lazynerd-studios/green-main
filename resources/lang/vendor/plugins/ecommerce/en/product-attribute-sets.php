@@ -56,4 +56,5 @@ return [
     'image' => 'Image',
     'remove' => 'Remove',
     'add_new_attribute' => 'Add new attribute',
+    'use_image_from_product_variation' => 'Use image from product variation (for Visual Swatch only)',
 ];

@@ -21,6 +21,7 @@ use Botble\Marketplace\Http\Requests\ProductRequest;
 use EcommerceHelper;
 use Illuminate\Support\Collection;
 use MarketplaceHelper;
+use ProductCategoryHelper;
 
 class ProductForm extends BaseProductForm
 {
@@ -119,7 +120,7 @@ class ProductForm extends BaseProductForm
             ->add('categories[]', 'categoryMulti', [
                 'label'      => trans('plugins/ecommerce::products.form.categories'),
                 'label_attr' => ['class' => 'control-label'],
-                'choices'    => get_product_categories_with_children(),
+                'choices'    => ProductCategoryHelper::getAllProductCategoriesWithChildren(),
                 'value'      => old('categories', $selectedCategories),
             ])
             ->add('brand_id', 'customSelect', [

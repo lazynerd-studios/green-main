@@ -24,9 +24,9 @@ class SaveCheckoutInformationRequest extends Request
 
             $rules['address.phone'] = EcommerceHelper::getPhoneValidationRule();
 
-            $rules['address.email'] = 'required|email';
-            $rules['address.state'] = 'required';
-            $rules['address.city'] = 'required';
+            $rules['address.email'] = 'required|email|max:60|min:6';
+            $rules['address.state'] = 'required|max:120';
+            $rules['address.city'] = 'required|max:120';
             $rules['address.address'] = 'required|string';
 
             if (count(EcommerceHelper::getAvailableCountries()) > 1) {

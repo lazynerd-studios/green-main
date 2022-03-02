@@ -600,7 +600,7 @@ class OrderHelper
                     'qty'          => $cartItem->qty,
                     'weight'       => $productByCartItem->weight * $cartItem->qty,
                     'price'        => $cartItem->price,
-                    'tax_amount'   => EcommerceHelperFacade::isTaxEnabled() ? $cartItem->taxRate / 100 * $cartItem->price : 0,
+                    'tax_amount'   => $cartItem->tax,
                     'options'      => [],
                 ];
 

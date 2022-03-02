@@ -44,7 +44,7 @@ return [
         // this event should call to assign some assets,
         // breadcrumb template.
         'beforeRenderTheme' => function (Theme $theme) {
-            $version = '1.1.4.1';
+            $version = '1.2.4';
 
             /*import vendors*/
             $theme->asset()->usePath()->add('normalize-css', 'css/vendors/normalize.css');

@@ -26,7 +26,7 @@ trait LocationTrait
     {
         $value = $this->state;
 
-        if (!$value || !is_int($value) || !is_plugin_active('location')) {
+        if (!$value || !is_plugin_active('location')) {
             return $value;
         }
 
@@ -46,7 +46,7 @@ trait LocationTrait
     {
         $value = $this->city;
 
-        if (!$value || !is_int($value) || !is_plugin_active('location')) {
+        if (!$value || !is_plugin_active('location')) {
             return $value;
         }
 

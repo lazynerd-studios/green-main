@@ -392,6 +392,17 @@ class Theme implements ThemeContract
     }
 
     /**
+     * @param string $theme
+     * @return $this
+     */
+    public function setThemeName($theme)
+    {
+        $this->theme = $theme;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getPublicThemeName()
@@ -889,7 +900,6 @@ class Theme implements ThemeContract
         if (app()->isLocal()) {
             $path = str_replace($this->getThemeNamespace(), $this->getThemeName(), $path);
             $file = str_replace('::', '/', str_replace('.', '/', $path));
-            dd(debug_backtrace());
             dd('This theme has not supported this view, please create file "' . theme_path($file) . '.blade.php" to render this page!');
         }
 
@@ -1006,7 +1016,7 @@ class Theme implements ThemeContract
         }
 
         $content->withHeaders([
-            'CMS-Version'       => '5.24.1',
+            'CMS-Version'       => '5.25.1',
             'Authorization-At'  => setting('membership_authorization_at'),
             'Activated-License' => !empty(setting('licensed_to')) ? 'Yes' : 'No',
         ]);

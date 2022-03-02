@@ -53,10 +53,11 @@ if (!function_exists('get_discount_description')) {
                     case 'specific-product':
                         $products = DiscountProduct::where('discount_id', $discount->id)
                             ->join('ec_products', 'ec_products.id', '=', 'ec_discount_products.product_id')
+                            ->where('ec_products.is_variation', 0)
                             ->pluck('ec_products.name')
                             ->all();
 
-                        $description .= __('for product(s)') . ' ' . implode(', ', $products);
+                        $description .= __('for product(s)') . ' ' . implode(', ', array_unique($products));
                         break;
                     case 'customer':
                         $customers = DiscountCustomer::where('discount_id', $discount->id)
@@ -81,7 +82,7 @@ if (!function_exists('get_discount_description')) {
                             ->pluck('ec_products.name')
                             ->all();
 
-                        $description .= __('for product(s) variant') . ' ' . implode(', ', $products);
+                        $description .= __('for product(s) variant') . ' ' . implode(', ', array_unique($products));
                         break;
                     default:
                         $description .= __('for all orders');

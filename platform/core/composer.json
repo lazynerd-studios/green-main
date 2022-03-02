@@ -19,7 +19,7 @@
     ],
     "type": "project",
     "require": {
-        "barryvdh/laravel-dompdf": "^0.9.0",
+        "barryvdh/laravel-dompdf": "^1.0.0",
         "botble/assets": "^1.0",
         "intervention/image": "^2.6",
         "kris/laravel-form-builder": "1.16.x-dev",

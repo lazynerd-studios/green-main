@@ -5,6 +5,7 @@ namespace Botble\Location\Http\Controllers;
 use Botble\Base\Events\BeforeEditContentEvent;
 use Botble\Location\Http\Requests\CountryRequest;
 use Botble\Location\Http\Resources\CountryResource;
+use Botble\Location\Models\Country;
 use Botble\Location\Repositories\Interfaces\CountryInterface;
 use Botble\Base\Http\Controllers\BaseController;
 use Illuminate\Contracts\View\Factory;
@@ -177,8 +178,9 @@ class CountryController extends BaseController
             ],
             'select'    => ['countries.id', 'countries.name'],
             'take'      => 10,
-
         ]);
+
+        $data->prepend(new Country(['id' => 0, 'name' => trans('plugins/location::city.select_country')]));
 
         return $response->setData(CountryResource::collection($data));
     }

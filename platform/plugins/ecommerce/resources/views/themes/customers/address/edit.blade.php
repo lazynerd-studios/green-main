@@ -28,7 +28,7 @@
             <div class="form-group mb-3 @if ($errors->has('country')) has-error @endif">
                 <label for="country">{{ __('Country') }}:</label>
                 <select name="country" class="form-control" id="country" data-type="country">
-                    @foreach(['' => __('Select country...')] + EcommerceHelper::getAvailableCountries() as $countryCode => $countryName)
+                    @foreach(EcommerceHelper::getAvailableCountries() as $countryCode => $countryName)
                         <option value="{{ $countryCode }}" @if ($address->country == $countryCode) selected @endif>{{ $countryName }}</option>
                     @endforeach
                 </select>
@@ -41,7 +41,7 @@
         <div class="input-group @if ($errors->has('state')) has-error @endif">
             <span class="input-group-prepend required ">{{ __('State') }}:</span>
             @if (EcommerceHelper::loadCountriesStatesCitiesFromPluginLocation())
-                <select name="state" class="form-control" id="state" data-type="state" data-placeholder="{{ __('Select state...') }}" data-url="{{ route('ajax.states-by-country') }}">
+                <select name="state" class="form-control" id="state" data-type="state" data-url="{{ route('ajax.states-by-country') }}">
                     <option value="">{{ __('Select state...') }}</option>
                     @if (old('country', $address->country))
                         @foreach(EcommerceHelper::getAvailableStatesByCountry(old('country', $address->country)) as $stateId => $stateName)
@@ -58,7 +58,7 @@
         <div class="input-group @if ($errors->has('city')) has-error @endif">
             <span class="input-group-prepend required ">{{ __('City') }}:</span>
             @if (EcommerceHelper::loadCountriesStatesCitiesFromPluginLocation())
-                <select name="city" class="form-control" id="city" data-type="city" data-placeholder="{{ __('Select city...') }}" data-url="{{ route('ajax.cities-by-state') }}">
+                <select name="city" class="form-control" id="city" data-type="city" data-url="{{ route('ajax.cities-by-state') }}">
                     <option value="">{{ __('Select city...') }}</option>
                     @if (old('state', $address->state))
                         @foreach(EcommerceHelper::getAvailableCitiesByState(old('state', $address->state)) as $cityId => $cityName)

@@ -118,7 +118,7 @@ class Post extends BaseModel
      */
     public function author(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo()->withDefault();
     }
 
     protected static function boot()

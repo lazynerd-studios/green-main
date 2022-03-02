@@ -471,7 +471,7 @@
             </div>
         </b-modal>
 
-        <b-modal id="add-customer" :title="__('order.create_a_new_customer')" :ok-title="__('order.save')" :cancel-title="__('order.cancel')"
+        <b-modal id="add-customer" :title="__('order.create_new_customer')" :ok-title="__('order.save')" :cancel-title="__('order.cancel')"
                  @shown="loadCountries()" @ok="createNewCustomer($event)">
             <div class="next-form-section">
                 <div class="next-form-grid">
@@ -498,7 +498,7 @@
                     <div class="next-form-grid-cell">
                         <label class="text-title-field">{{ __('order.country') }}</label>
                         <div class="ui-select-wrapper">
-                            <select class="ui-select" v-model="child_customer_address.country">
+                            <select class="ui-select" v-model="child_customer_address.country" @change="loadStates($event)">
                                 <option v-for="(countryName, countryCode) in countries" :value="countryCode">
                                     {{ countryName }}
                                 </option>
@@ -511,12 +511,34 @@
                 </div>
                 <div class="next-form-grid">
                     <div class="next-form-grid-cell">
-                        <label class="text-title-field">{{ __('order.state') }}</label>
-                        <input type="text" class="next-input" v-model="child_customer_address.state">
+                        <label class="text-title-field">{{ __('order.state')}}</label>
+                        <div class="ui-select-wrapper" v-if="use_location_data">
+                            <select class="ui-select customer-address-state" v-model="child_customer_address.state" @change="loadCities($event)">
+                                <option v-for="state in states" :value="state.id">
+                                    {{ state.name }}
+                                </option>
+                            </select>
+                            <svg class="svg-next-icon svg-next-icon-size-16">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#select-chevron"></use>
+                            </svg>
+                        </div>
+                        <input type="text" class="next-input customer-address-state" v-if="!use_location_data"
+                               v-model="child_customer_address.state">
                     </div>
                     <div class="next-form-grid-cell">
                         <label class="text-title-field">{{ __('order.city') }}</label>
-                        <input type="text" class="next-input" v-model="child_customer_address.city">
+                        <div class="ui-select-wrapper" v-if="use_location_data">
+                            <select class="ui-select customer-address-city" v-model="child_customer_address.city">
+                                <option v-for="city in cities" :value="city.id">
+                                    {{ city.name }}
+                                </option>
+                            </select>
+                            <svg class="svg-next-icon svg-next-icon-size-16">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#select-chevron"></use>
+                            </svg>
+                        </div>
+                        <input type="text" class="next-input customer-address-city" v-if="!use_location_data"
+                               v-model="child_customer_address.city">
                     </div>
                 </div>
                 <div class="next-form-grid" v-if="zip_code_enabled">
@@ -673,7 +695,7 @@
                     <div class="next-form-grid-cell">
                         <label class="text-title-field">{{ __('order.country') }}</label>
                         <div class="ui-select-wrapper">
-                            <select class="ui-select customer-address-country" v-model="child_customer_address.country">
+                            <select class="ui-select customer-address-country" v-model="child_customer_address.country" @change="loadStates($event)">
                                 <option v-for="(countryName, countryCode) in countries" :value="countryCode">
                                     {{ countryName }}
                                 </option>
@@ -687,12 +709,32 @@
                 <div class="next-form-grid">
                     <div class="next-form-grid-cell">
                         <label class="text-title-field">{{ __('order.state')}}</label>
-                        <input type="text" class="next-input customer-address-state"
+                        <div class="ui-select-wrapper" v-if="use_location_data">
+                            <select class="ui-select customer-address-state" v-model="child_customer_address.state" @change="loadCities($event)">
+                                <option v-for="state in states" :value="state.id">
+                                    {{ state.name }}
+                                </option>
+                            </select>
+                            <svg class="svg-next-icon svg-next-icon-size-16">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#select-chevron"></use>
+                            </svg>
+                        </div>
+                        <input type="text" class="next-input customer-address-state" v-if="!use_location_data"
                                v-model="child_customer_address.state">
                     </div>
                     <div class="next-form-grid-cell">
                         <label class="text-title-field">{{ __('order.city') }}</label>
-                        <input type="text" class="next-input customer-address-city"
+                        <div class="ui-select-wrapper" v-if="use_location_data">
+                            <select class="ui-select customer-address-city" v-model="child_customer_address.city">
+                                <option v-for="city in cities" :value="city.id">
+                                    {{ city.name }}
+                                </option>
+                            </select>
+                            <svg class="svg-next-icon svg-next-icon-size-16">
+                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#select-chevron"></use>
+                            </svg>
+                        </div>
+                        <input type="text" class="next-input customer-address-city" v-if="!use_location_data"
                                v-model="child_customer_address.city">
                     </div>
                 </div>
@@ -706,13 +748,12 @@
             </div>
         </b-modal>
 
-        <b-modal id="make-paid" :title="__('order.create_a_new_order')" :ok-title="__('order.create_order')" :cancel-title="__('order.close')"
+        <b-modal id="make-paid" :title="__('order.confirm_payment_is_paid_for_this_order')" :ok-title="__('order.create_order')" :cancel-title="__('order.close')"
                  @ok="createOrder($event, true)">
-            <label class="ws-nm">{{ __('order.confirm_payment_is_paid_for_this_order') }}</label>
-            <p>
+            <div class="note note-warning">
                 {{ __('order.payment_status_of_the_order_is_paid_once_the_order_has_been_created_you_cannot_change_the_payment_method_or_status') }}.
-            </p>
-            <p>{{ __('order.Select payment method') }}</p>
+            </div>
+            <p>{{ __('order.select_payment_method') }}</p>
             <div class="ui-select-wrapper mb15 next-input--is-focused">
                 <select class="ui-select" v-model="child_payment_method">
                     <option value="cod">{{ __('order.cash_on_delivery_cod') }}</option>
@@ -723,15 +764,14 @@
                 </svg>
             </div>
             <br/>
-            <p>{{ __('order.Paid amount') }} : <span>{{ child_total_amount | formatPrice }} {{ currency }}</span></p>
+            <p>{{ __('order.paid_amount') }} : <span>{{ child_total_amount | formatPrice }} {{ currency }}</span></p>
         </b-modal>
 
-        <b-modal id="make-pending" :title="__('order.create_a_new_order')" :ok-title="__('order.create_order')" :cancel-title="__('order.close')"
+        <b-modal id="make-pending" :title="__('order.confirm_that_payment_for_this_order_will_be_paid_later')" :ok-title="__('order.create_order')" :cancel-title="__('order.close')"
                  @ok="createOrder($event)">
-            <label class="ws-nm">{{ __('order.confirm_that_payment_for_this_order_will_be_paid_later') }}</label>
-            <p>
+            <div class="note note-warning">
                 {{ __('order.payment_status_of_the_order_is_pending_once_the_order_has_been_created_you_cannot_change_the_payment_method_or_status') }}.
-            </p>
+            </div>
             <div class="ui-select-wrapper mb15 next-input--is-focused">
                 <select class="ui-select" v-model="child_payment_method">
                     <option value="cod">{{ __('order.cash_on_delivery_cod') }}</option>
@@ -842,6 +882,10 @@
                 default: () => 0,
                 required: true
             },
+            use_location_data: {
+                type: Number,
+                default: () => 0,
+            },
         },
         data: function () {
             return {
@@ -857,6 +901,8 @@
                 hidden_customer_search_panel: true,
                 customer_keyword: null,
                 countries: [],
+                states: [],
+                cities: [],
                 shipping_type: 'custom',
                 product: {
                     name: null,
@@ -1023,19 +1069,19 @@
             handleRemoveVariant: function ($event, variant) {
                 $event.preventDefault();
                 if (variant.product_id) {
-                    this.child_product_ids = _.reject(this.child_product_ids, (item) => {
+                    this.child_product_ids = _.reject(this.child_product_ids, item => {
                         return item === variant.product_id;
                     });
 
-                    this.child_products = _.reject(this.child_products, (item) => {
+                    this.child_products = _.reject(this.child_products, item => {
                         return item.product_id === variant.product_id;
                     });
                 } else {
-                    this.child_product_ids = _.reject(this.child_product_ids, (item) => {
+                    this.child_product_ids = _.reject(this.child_product_ids, item => {
                         return item === variant.id;
                     });
 
-                    this.child_products = _.reject(this.child_products, (item) => {
+                    this.child_products = _.reject(this.child_products, item => {
                         return item.id === variant.id;
                     });
                 }
@@ -1052,6 +1098,28 @@
                             Botble.handleError(res.response.data);
                         });
                 }
+            },
+            loadStates: function ($event) {
+                let context = this;
+                axios
+                    .get(route('ajax.states-by-country', {country_id: $event.target.value}))
+                    .then(res => {
+                        context.states = res.data.data;
+                    })
+                    .catch(res => {
+                        Botble.handleError(res.response.data);
+                    });
+            },
+            loadCities: function ($event) {
+                let context = this;
+                axios
+                    .get(route('ajax.cities-by-state', {state_id: $event.target.value}))
+                    .then(res => {
+                        context.cities = res.data.data;
+                    })
+                    .catch(res => {
+                        Botble.handleError(res.response.data);
+                    });
             },
             createOrder: function ($event, paid = false) {
                 $event.preventDefault();

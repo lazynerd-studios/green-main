@@ -425,4 +425,46 @@ class ProductController extends BaseController
 
         return $this->baseDeleteVersionItem($productVariation, $productVariationItem, $variationId);
     }
+
+    /**
+     * @param int $id
+     * @param Request $request
+     * @param BaseHttpResponse $response
+     * @return BaseHttpResponse
+     * @throws Throwable
+     */
+    public function getListProductForSearch(Request $request, BaseHttpResponse $response)
+    {
+        $availableProducts = $this->productRepository
+            ->advancedGet([
+                'condition' => [
+                    'status' => BaseStatusEnum::PUBLISHED,
+                    ['is_variation', '<>', 1],
+                    ['id', '<>', $request->input('product_id', 0)],
+                    ['name', 'LIKE', '%' . $request->input('keyword') . '%'],
+                    'store_id' => auth('customer')->user()->store->id,
+                ],
+                'select'    => [
+                    'id',
+                    'name',
+                    'images',
+                    'image',
+                    'price',
+                ],
+                'paginate'  => [
+                    'per_page'      => 5,
+                    'type'          => 'simplePaginate',
+                    'current_paged' => (int)$request->input('page', 1),
+                ],
+            ]);
+
+        $includeVariation = $request->input('include_variation', 0);
+
+        return $response->setData(
+            view('plugins/ecommerce::products.partials.panel-search-data', compact(
+                'availableProducts',
+                'includeVariation'
+            ))->render()
+        );
+    }
 }

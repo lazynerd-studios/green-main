@@ -8,6 +8,7 @@ use Botble\Ecommerce\Repositories\Interfaces\BrandInterface;
 use Botble\Ecommerce\Repositories\Interfaces\ProductAttributeSetInterface;
 use Botble\Ecommerce\Repositories\Interfaces\ProductCategoryInterface;
 use Botble\Ecommerce\Repositories\Interfaces\TaxInterface;
+use Botble\Marketplace\Repositories\Interfaces\StoreInterface;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -121,6 +122,13 @@ class TemplateProductExport implements FromCollection,
             'content'                          => '',
         ];
 
+        if (is_plugin_active('marketplace')) {
+            $stores = app(StoreInterface::class)->pluck('name', 'id');
+            $stores = collect($stores);
+
+            $product['vendor'] = $stores->count() ? $stores->random() : null;
+        }
+
         $attributes1 = [];
         foreach ($attributeSets as $set) {
             $attributes1[] = $set->title . ':' . ($set->attributes->count() ? $set->attributes->random()->title : null);
@@ -223,7 +231,7 @@ class TemplateProductExport implements FromCollection,
      */
     public function headings(): array
     {
-        return [
+        $headings = [
             'name'                             => 'Product name',
             'description'                      => 'Description',
             'slug'                             => 'Slug',
@@ -253,7 +261,14 @@ class TemplateProductExport implements FromCollection,
             'wide'                             => 'Wide',
             'height'                           => 'Height',
             'content'                          => 'Content',
+            'vendor'                           => 'Vendor',
         ];
+
+        if (is_plugin_active('marketplace')) {
+            $headings['vendor'] = 'Vendor';
+        }
+
+        return $headings;
     }
 
     /**

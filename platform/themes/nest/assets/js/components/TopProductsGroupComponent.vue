@@ -9,7 +9,7 @@
             </div>
 
             <div v-for="(item, index) in data" :key="index" v-if="!isLoading && data.length"
-                class="col-xl-3 col-lg-6 col-md-6 mb-md-0">
+                :class="'col-xl-' + (12 / data.length) + ' col-lg-6 col-md-6 mb-md-0'">
                 <h4 class="section-title style-1 mb-30 animated animated">{{ item.title }}</h4>
                 <div class="product-list-small animated animated">
                     <article class="row align-items-center hover-up" v-for="(product, i) in item.products" :key="'' + i + index + product.id">

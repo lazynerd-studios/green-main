@@ -62,7 +62,7 @@ class Payment extends BaseModel
      */
     public function customer(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo()->withDefault();
     }
 
     /**

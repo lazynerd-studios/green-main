@@ -419,64 +419,87 @@ class NestController extends PublicController
             return $response->setNextUrl(route('public.index'));
         }
 
-        $endDate = now();
-        $startDate = now()->subDays(29);
+        $tabs = array_filter(explode(',', $request->input('tabs')));
+
+        if (empty($tabs)) {
+            $tabs = ['top-selling', 'trending-products', 'recent-added', 'top-rated'];
+        }
+
         $limit = 4;
 
         $withCount = EcommerceHelper::withReviewsCount();
 
         $with = ['slugable', 'variationInfo', 'productCollections'];
 
-        $topSelling = app(ProductInterface::class)
-            ->getModel()
-            ->join('ec_order_product', 'ec_products.id', '=', 'ec_order_product.product_id')
-            ->join('ec_orders', 'ec_orders.id', '=', 'ec_order_product.order_id')
-            ->join('payments', 'payments.order_id', '=', 'ec_orders.id')
-            ->where('payments.status', PaymentStatusEnum::COMPLETED)
-            ->whereDate('ec_orders.created_at', '>=', $startDate)
-            ->whereDate('ec_orders.created_at', '<=', $endDate)
-            ->select([
-                'ec_products.*',
-                'ec_order_product.qty as qty',
-            ])
-            ->with($with)
-            ->orderBy('ec_order_product.qty', 'DESC')
-            ->distinct()
-            ->limit($limit)
-            ->get();
+        $data = [];
 
-        $trendingProducts = get_trending_products([
-            'take'      => $limit,
-            'with'      => $with,
-            'withCount' => $withCount,
-        ]);
+        if (in_array('top-selling', $tabs)) {
+            $endDate = now();
+            $startDate = now()->subDays((int) $request->input('top_selling_in_days', 30));
 
-        $recentlyAdded = app(ProductInterface::class)->advancedGet([
-            'take'      => $limit,
-            'with'      => $with,
-            'withCount' => $withCount,
-        ]);
+            $topSelling = app(ProductInterface::class)
+                ->getModel()
+                ->join('ec_order_product', 'ec_products.id', '=', 'ec_order_product.product_id')
+                ->join('ec_orders', 'ec_orders.id', '=', 'ec_order_product.order_id')
+                ->join('payments', 'payments.order_id', '=', 'ec_orders.id')
+                ->where('payments.status', PaymentStatusEnum::COMPLETED)
+                ->whereDate('ec_orders.created_at', '>=', $startDate)
+                ->whereDate('ec_orders.created_at', '<=', $endDate)
+                ->select([
+                    'ec_products.*',
+                    'ec_order_product.qty as qty',
+                ])
+                ->with($with)
+                ->orderBy('ec_order_product.qty', 'DESC')
+                ->distinct()
+                ->limit($limit)
+                ->get();
 
-        $topRated = get_top_rated_products($limit, $with, $withCount);
+            if ($topSelling->count()) {
+                $data[] = [
+                    'title'    => __('Top Selling'),
+                    'products' => TopSellingProductResource::collection($topSelling),
+                ];
+            }
 
-        return $response->setData([
-            [
-                'title'    => __('Top Selling'),
-                'products' => TopSellingProductResource::collection($topSelling),
-            ],
-            [
+        }
+
+        if (in_array('trending-products', $tabs)) {
+            $trendingProducts = get_trending_products([
+                'take'      => $limit,
+                'with'      => $with,
+                'withCount' => $withCount,
+            ]);
+
+            $data[] = [
                 'title'    => __('Trending Products'),
                 'products' => ProductMiniResource::collection($trendingProducts),
-            ],
-            [
+            ];
+        }
+
+        if (in_array('recent-added', $tabs)) {
+            $recentlyAdded = app(ProductInterface::class)->advancedGet([
+                'take'      => $limit,
+                'with'      => $with,
+                'withCount' => $withCount,
+            ]);
+
+            $data[] = [
                 'title'    => __('Recently Added'),
                 'products' => ProductMiniResource::collection($recentlyAdded),
-            ],
-            [
+            ];
+        }
+
+        if (in_array('top-rated', $tabs)) {
+            $topRated = get_top_rated_products($limit, $with, $withCount);
+
+            $data[] = [
                 'title'    => __('Top Rated'),
                 'products' => ProductMiniResource::collection($topRated),
-            ],
-        ]);
+            ];
+        }
+
+        return $response->setData($data);
     }
 
     /**
@@ -517,8 +540,12 @@ class NestController extends PublicController
                 'ec_products.is_variation' => 0,
             ])
             ->with($with)
+            ->orderBy('ec_products.created_at', 'DESC')
+            ->orderBy('ec_products.order', 'ASC')
             ->withCount(EcommerceHelper::withReviewsCount())
             ->limit((int) $request->input('limit') ?: 8)
+            ->select('ec_products.*')
+            ->distinct()
             ->get();
 
         return $response->setData(ProductResource::collection($products));

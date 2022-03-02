@@ -7,7 +7,7 @@ class Location {
                 $element.closest('form').find('button[type=submit], input[type=submit]').prop('disabled', true);
             },
             success: data =>  {
-                let option = '<option value="0">' + ($element.data('placeholder') ? $element.data('placeholder') : 'Select state...') + '</option>';
+                let option = '';
                 $.each(data.data,(index, item) => {
                     option += '<option value="' + item.id + '">' + item.name + '</option>';
                 });
@@ -27,7 +27,7 @@ class Location {
                 $element.closest('form').find('button[type=submit], input[type=submit]').prop('disabled', true);
             },
             success: data =>  {
-                let option = '<option value="0">' + ($element.data('placeholder') ? $element.data('placeholder') : 'Select city...') + '</option>';
+                let option = '';
                 $.each(data.data,(index, item) => {
                     option += '<option value="' + item.id + '">' + item.name + '</option>';
                 });

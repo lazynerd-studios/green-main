@@ -183,8 +183,18 @@ app()->booted(function () {
             return Theme::partial('shortcodes.ecommerce.product-categories-admin-config', compact('attributes'));
         });
 
-        add_shortcode('top-products-group', __('Top Products Group'), __('Top Products Group'), function () {
-            return Theme::partial('shortcodes.ecommerce.top-products-group');
+        add_shortcode('top-products-group', __('Top Products Group'), __('Top Products Group'), function ($shortcode) {
+            return Theme::partial('shortcodes.ecommerce.top-products-group', compact('shortcode'));
+        });
+
+        shortcode()->setAdminConfig('top-products-group', function ($attributes) {
+            $tabs = array_filter(explode(',', Arr::get($attributes, 'tabs')));
+
+            if (empty($tabs)) {
+                $tabs = ['top-selling', 'trending-products', 'recent-added', 'top-rated'];
+            }
+
+            return Theme::partial('shortcodes.ecommerce.top-products-group-admin-config', compact('tabs', 'attributes'));
         });
 
         add_shortcode('popular-products', __('Popular Products'), __('Popular Products'), function ($shortcode) {
@@ -224,6 +234,8 @@ app()->booted(function () {
 
         /**
          * @param string|BaseModel $ads
+         * @param string $class
+         * @param null $loop
          * @return string|null
          */
         function display_ad($ads, $class = '', $loop = null)
@@ -268,6 +280,7 @@ app()->booted(function () {
 
         /**
          * @param array $keys
+         * @param string $style
          * @return string
          */
         function display_ads(array $keys, $style = '')

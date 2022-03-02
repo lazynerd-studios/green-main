@@ -19,14 +19,16 @@ class ProductResource extends JsonResource
     {
         $defaultImage = RvMedia::getDefaultImage();
 
+        $originalProduct = !$this->is_variation ? $this : $this->original_product;
+
         $data = [
             'id'          => $this->id,
             'name'        => $this->name,
             'url'         => $this->url,
             'image'       => RvMedia::getImageUrl($this->image, 'product-thumb', false, $defaultImage),
             'hover_image' => RvMedia::getImageUrl($this->image, 'product-thumb', false, $defaultImage),
-            'price'       => format_price($this->front_sale_price_with_taxes),
-            'sale_price'  => $this->front_sale_price !== $this->price ? format_price($this->price_with_taxes) : null,
+            'price'         => format_price($this->price_with_taxes),
+            'sale_price'    => $this->front_sale_price !== $this->price ? format_price($this->front_sale_price_with_taxes) : null,
             'urls'        => [
                 'quick_view' => route('public.ajax.quick-view', $this->id),
             ],
@@ -40,11 +42,18 @@ class ProductResource extends JsonResource
             ];
         }
 
-        if (EcommerceHelper::isReviewEnabled() && $this->reviews_count) {
-            $data['reviews'] = [
-                'avg'   => $this->reviews_avg,
-                'count' => $this->reviews_count,
-            ];
+        if (EcommerceHelper::isReviewEnabled()) {
+            if ($this->reviews_count) {
+                $data['reviews'] = [
+                    'avg'   => $this->reviews_avg,
+                    'count' => $this->reviews_count,
+                ];
+            } elseif ($originalProduct->reviews->count()) {
+                $data['reviews'] = [
+                    'avg'   => $originalProduct->reviews->avg('star'),
+                    'count' => $originalProduct->reviews->count()
+                ];
+            }
         }
 
         if (is_plugin_active('marketplace') && $this->store->id) {

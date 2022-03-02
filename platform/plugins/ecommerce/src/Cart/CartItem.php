@@ -3,6 +3,7 @@
 namespace Botble\Ecommerce\Cart;
 
 use Botble\Ecommerce\Cart\Contracts\Buyable;
+use EcommerceHelper;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Arr;
@@ -248,6 +249,10 @@ class CartItem implements Arrayable, Jsonable
         }
 
         if ($attribute === 'priceTax') {
+            if (!EcommerceHelper::isTaxEnabled()) {
+                return 0;
+            }
+
             return $this->price + $this->tax;
         }
 
@@ -260,10 +265,18 @@ class CartItem implements Arrayable, Jsonable
         }
 
         if ($attribute === 'tax') {
+            if (!EcommerceHelper::isTaxEnabled()) {
+                return 0;
+            }
+
             return $this->price * ($this->taxRate / 100);
         }
 
         if ($attribute === 'taxTotal') {
+            if (!EcommerceHelper::isTaxEnabled()) {
+                return 0;
+            }
+
             return $this->tax * $this->qty;
         }
 

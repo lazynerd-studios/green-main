@@ -111,10 +111,10 @@
         }
 
         .stamp {
-            border         : 2rem solid #555;
+            border         : 2px solid #555;
             color          : #555;
             display        : inline-block;
-            font-size      : 1rem;
+            font-size      : 18px;
             font-weight    : 700;
             left           : 30%;
             line-height    : 1;

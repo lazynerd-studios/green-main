@@ -169,7 +169,7 @@
                         </p>
                     </div>
 
-                    @if ($order->shipment)
+                    @if ($order->shipment->id)
                         <br>
                         <h5>{{ __('Shipping Information:') }}</h5>
                         <p><span class="d-inline-block">{{ __('Shipping Status') }}</span>: <strong class="d-inline-block text-info">{!! clean($order->shipment->status->toHtml()) !!}</strong></p>

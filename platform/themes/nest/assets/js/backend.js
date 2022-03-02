@@ -132,7 +132,7 @@
 
                     const unavailableAttributeIds = res.data.unavailable_attribute_ids || [];
                     $('.attribute-swatch-item').removeClass('pe-none');
-                    $('option.product-filter-item').prop('disabled', false);
+                    $('.product-filter-item option').prop('disabled', false);
                     if (unavailableAttributeIds && unavailableAttributeIds.length) {
                         unavailableAttributeIds.map(function (id) {
                             let $item = $('.attribute-swatch-item[data-id="' + id + '"]');
@@ -140,7 +140,7 @@
                                 $item.addClass('pe-none');
                                 $item.find('input').prop('checked', false);
                             } else {
-                                $item = $('option.product-filter-item[data-id="' + id + '"]');
+                                $item = $('.product-filter-item option[data-id="' + id + '"]');
                                 if ($item.length) {
                                     $item.prop('disabled', 'disabled').prop('selected', false);
                                 }

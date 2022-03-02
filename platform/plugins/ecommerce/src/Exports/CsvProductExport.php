@@ -60,7 +60,7 @@ class CsvProductExport implements FromCollection, WithHeadings
                 $productAttributes = $this->getProductAttributes($product);
             }
 
-            $results[] = [
+            $result = [
                 'name'                             => $product->name,
                 'description'                      => $product->description,
                 'slug'                             => $product->slug,
@@ -90,6 +90,12 @@ class CsvProductExport implements FromCollection, WithHeadings
                 'height'                           => $product->height,
                 'content'                          => $product->content,
             ];
+
+            if (is_plugin_active('marketplace')) {
+                $result['vendor'] = $product->store_id ? $product->store->name : null;
+            }
+
+            $results[] = $result;
 
             if ($product->variations->count()) {
                 foreach ($product->variations as $variation) {
@@ -161,7 +167,7 @@ class CsvProductExport implements FromCollection, WithHeadings
      */
     public function headings(): array
     {
-        return [
+        $headings = [
             'name'                             => 'Product name',
             'description'                      => 'Description',
             'slug'                             => 'Slug',
@@ -191,5 +197,11 @@ class CsvProductExport implements FromCollection, WithHeadings
             'height'                           => 'Height',
             'content'                          => 'Content',
         ];
+
+        if (is_plugin_active('marketplace')) {
+            $headings['vendor'] = 'Vendor';
+        }
+
+        return $headings;
     }
 }

@@ -170,6 +170,15 @@ class PublicCheckoutController
             return $response->setNextUrl(route('public.cart'));
         }
 
+        foreach ($products as $product) {
+            if ($product->isOutOfStock()) {
+                return $response
+                    ->setError()
+                    ->setNextUrl(route('public.cart'))
+                    ->setMessage(__('Product :product is out of stock!', ['product' => $product->original_product->name]));
+            }
+        }
+
         $sessionCheckoutData = $this->processOrderData($token, $sessionCheckoutData, $request);
 
         if (is_plugin_active('marketplace')) {
@@ -458,7 +467,7 @@ class PublicCheckoutController
                     'qty'          => $cartItem->qty,
                     'weight'       => $weight,
                     'price'        => $cartItem->price,
-                    'tax_amount'   => EcommerceHelper::isTaxEnabled() ? $cartItem->taxRate / 100 * $cartItem->price : 0,
+                    'tax_amount'   => $cartItem->tax,
                     'options'      => [],
                 ];
 
@@ -611,6 +620,14 @@ class PublicCheckoutController
         if (is_plugin_active('marketplace')) {
             $products = Cart::instance('cart')->products();
 
+            foreach ($products as $product) {
+                if ($product->isOutOfStock()) {
+                    return $response
+                        ->setError()
+                        ->setMessage(__('Product :product is out of stock!', ['product' => $product->original_product->name]));
+                }
+            }
+
             return apply_filters(
                 HANDLE_PROCESS_POST_CHECKOUT_ORDER_DATA_ECOMMERCE,
                 $products,
@@ -625,6 +642,12 @@ class PublicCheckoutController
         foreach (Cart::instance('cart')->content() as $cartItem) {
             $product = $this->productRepository->findById($cartItem->id);
             if ($product) {
+                if ($product->isOutOfStock()) {
+                    return $response
+                        ->setError()
+                        ->setMessage(__('Product :product is out of stock!', ['product' => $product->original_product->name]));
+                }
+
                 if ($product->weight) {
                     $weight += $product->weight * $cartItem->qty;
                 }
@@ -734,7 +757,7 @@ class PublicCheckoutController
                     'qty'          => $cartItem->qty,
                     'weight'       => $weight,
                     'price'        => $cartItem->price,
-                    'tax_amount'   => EcommerceHelper::isTaxEnabled() ? $cartItem->taxRate / 100 * $cartItem->price : 0,
+                    'tax_amount'   => $cartItem->tax,
                     'options'      => [],
                 ];
 

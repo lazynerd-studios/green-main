@@ -24,7 +24,7 @@
                     <label class="text-title-field required">{{ trans('plugins/ecommerce::shipping.country') }}</label>
                     <div class="ui-select-wrapper">
                         <select name="country" class="ui-select form-control" data-type="country">
-                            @foreach(['' => trans('plugins/ecommerce::shipping.select_country')] + EcommerceHelper::getAvailableCountries() as $countryCode => $countryName)
+                            @foreach(EcommerceHelper::getAvailableCountries() as $countryCode => $countryName)
                                 <option value="{{ $countryCode }}" @if ($address->country == $countryCode) selected @endif>{{ $countryName }}</option>
                             @endforeach
                         </select>
@@ -43,7 +43,7 @@
                 <label class="text-title-field required">{{ trans('plugins/ecommerce::shipping.state') }}</label>
                 @if (EcommerceHelper::loadCountriesStatesCitiesFromPluginLocation())
                     <div class="ui-select-wrapper">
-                        <select name="state" class="ui-select form-control" data-type="state" data-placeholder="{{ __('Select state...') }}" data-url="{{ route('ajax.states-by-country') }}">
+                        <select name="state" class="ui-select form-control" data-type="state" data-url="{{ route('ajax.states-by-country') }}">
                             <option value="">{{ __('Select state...') }}</option>
                             @if ($address->state)
                                 @foreach(EcommerceHelper::getAvailableStatesByCountry($address->country) as $stateId => $stateName)
@@ -66,7 +66,7 @@
                 <label class="text-title-field required">{{ trans('plugins/ecommerce::shipping.city') }}</label>
                 @if (EcommerceHelper::loadCountriesStatesCitiesFromPluginLocation())
                     <div class="ui-select-wrapper">
-                        <select name="city" class="ui-select form-control" data-type="city" data-placeholder="{{ __('Select city...') }}" data-url="{{ route('ajax.cities-by-state') }}">
+                        <select name="city" class="ui-select form-control" data-type="city" data-url="{{ route('ajax.cities-by-state') }}">
                             <option value="">{{ __('Select city...') }}</option>
                             @if ($address->city)
                                 @foreach(EcommerceHelper::getAvailableCitiesByState($address->state) as $cityId => $cityName)

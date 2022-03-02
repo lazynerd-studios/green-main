@@ -27,6 +27,7 @@
                 :customer_order_numbers="{{ $customerOrderNumbers }}"
                 :currency="'{{ get_application_currency()->symbol }}'"
                 :zip_code_enabled="{{ (int)EcommerceHelper::isZipCodeEnabled() }}"
+                :use_location_data="{{ (int)EcommerceHelper::loadCountriesStatesCitiesFromPluginLocation() }}"
         ></create-order>
     </div>
 @stop

@@ -54,7 +54,7 @@ class AuditHandlerListener
             if (!in_array($event->action, ['loggedin', 'password'])) {
                 $data['request'] = json_encode($this->request->except([
                     'username',
-	            'password',
+                    'password',
                     're_password',
                     'new_password',
                     'current_password',

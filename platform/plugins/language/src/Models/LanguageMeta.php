@@ -41,7 +41,7 @@ class LanguageMeta extends BaseModel
      */
     public function reference()
     {
-        return $this->morphTo();
+        return $this->morphTo()->withDefault();
     }
 
     /**

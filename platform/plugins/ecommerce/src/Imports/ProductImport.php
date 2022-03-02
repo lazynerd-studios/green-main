@@ -20,6 +20,7 @@ use Botble\Ecommerce\Repositories\Interfaces\TaxInterface;
 use Botble\Ecommerce\Services\Products\StoreAttributesOfProductService;
 use Botble\Ecommerce\Services\Products\StoreProductService;
 use Botble\Ecommerce\Services\StoreProductTagService;
+use Botble\Marketplace\Repositories\Interfaces\StoreInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -131,6 +132,11 @@ class ProductImport implements  ToModel,
     /**
      * @var Collection
      */
+    protected $stores;
+
+    /**
+     * @var Collection
+     */
     protected $labels;
 
     /**
@@ -196,6 +202,10 @@ class ProductImport implements  ToModel,
         $this->productAttributeSets = $this->productAttributeSetRepository->all(['attributes']);
         $this->productAttributeRepository = $productAttributeRepository;
         $this->productVariationRepository = $productVariationRepository;
+
+        if (is_plugin_active('marketplace')) {
+            $this->stores = collect();
+        }
     }
 
     /**
@@ -439,6 +449,10 @@ class ProductImport implements  ToModel,
         $row = $this->setProductCollectionsToRow($row);
         $row = $this->setProductLabelsToRow($row);
 
+        if (is_plugin_active('marketplace')) {
+            $row = $this->setStoreToRow($row);
+        }
+
         $this->request->merge($row);
 
         return $row;
@@ -473,6 +487,42 @@ class ProductImport implements  ToModel,
             }
 
             $row['tax_id'] = $taxId;
+        }
+
+        return $row;
+    }
+
+    /**
+     * @param array $row
+     * @return array
+     */
+    protected function setStoreToRow(array $row) : array
+    {
+        $row['store_id'] = 0;
+
+        if (!empty($row['vendor'])) {
+            $row['vendor'] = trim($row['vendor']);
+
+            $store = $this->stores->firstWhere('keyword', $row['vendor']);
+            if ($store) {
+                $storeId = $store['store_id'];
+            } else {
+                $storeRepository = app(StoreInterface::class);
+
+                if (is_numeric($row['vendor'])) {
+                    $store = $storeRepository->findById($row['vendor']);
+                } else {
+                    $store = $storeRepository->getFirstBy(['name' => $row['vendor']]);
+                }
+
+                $storeId = $store ? $store->id : 0;
+                $this->stores->push([
+                    'keyword'  => $row['vendor'],
+                    'store_id' => $storeId,
+                ]);
+            }
+
+            $row['store_id'] = $storeId;
         }
 
         return $row;

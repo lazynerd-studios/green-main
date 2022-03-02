@@ -310,4 +310,26 @@ class BaseHelper
             return $weight;
         });
     }
+
+    /**
+     * @return string[]
+     */
+    public function getDateFormats(): array
+    {
+        $formats = [
+            'Y-m-d',
+            'Y-M-d',
+            'y-m-d',
+            'm-d-Y',
+            'M-d-Y',
+        ];
+
+        foreach ($formats as $format) {
+            $formats[] = str_replace('-', '/', $format);
+        }
+
+        $formats[] = 'M d, Y';
+
+        return $formats;
+    }
 }

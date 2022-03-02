@@ -19,6 +19,10 @@ return new class extends Migration {
     {
         if (is_plugin_active('language')) {
 
+            Schema::dropIfExists('countries_backup');
+            Schema::dropIfExists('states_backup');
+            Schema::dropIfExists('cities_backup');
+
             DB::statement('CREATE TABLE IF NOT EXISTS countries_backup LIKE countries');
             DB::statement('TRUNCATE TABLE countries_backup');
             DB::statement('INSERT countries_backup SELECT * FROM countries');

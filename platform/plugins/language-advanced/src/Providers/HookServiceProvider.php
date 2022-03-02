@@ -408,9 +408,10 @@ class HookServiceProvider extends ServiceProvider
 
         $translationTable = $table . '_translations';
 
-        return $query
-            ->with('translations', function ($query) use ($translationTable, $currentLocale) {
+        return $query->with([
+            'translations' => function ($query) use ($translationTable, $currentLocale) {
                 $query->where($translationTable . '.lang_code', $currentLocale);
-            });
+            },
+        ]);
     }
 }

@@ -401,6 +401,40 @@ class Product extends BaseModel
      */
     public function getFrontSalePriceAttribute()
     {
+        $price = $this->getDiscountPrice();
+
+        if ($price != $this->price) {
+            return $this->getComparePrice($price, $this->sale_price ?: $this->price);
+        }
+
+        $price = $this->getFlashSalePrice();
+
+        if ($price != $this->price) {
+            return $this->getComparePrice($price, $this->sale_price ?: $this->price);
+        }
+
+        return $this->getComparePrice($this->price, $this->sale_price);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFlashSalePrice()
+    {
+        $flashSale = FlashSaleFacade::getFacadeRoot()->flashSaleForProduct($this);
+
+        if ($flashSale && $flashSale->pivot->quantity > $flashSale->pivot->sold) {
+            return $flashSale->pivot->price;
+        }
+
+        return $this->price;
+    }
+
+    /**
+     * @return float|int|mixed
+     */
+    public function getDiscountPrice()
+    {
         if (!$this->is_variation) {
             $productCollections = $this->productCollections;
         } else {
@@ -410,36 +444,30 @@ class Product extends BaseModel
         $promotion = DiscountFacade::getFacadeRoot()
             ->promotionForProduct([$this->id], $productCollections->pluck('id')->all());
 
-        if ($promotion) {
-            $price = $this->price;
-            switch ($promotion->type_option) {
-                case 'same-price':
-                    $price = $promotion->value;
-                    break;
-                case 'amount':
-                    $price = $price - $promotion->value;
-                    if ($price < 0) {
-                        $price = 0;
-                    }
-                    break;
-                case 'percentage':
-                    $price = $price - ($price * $promotion->value / 100);
-                    if ($price < 0) {
-                        $price = 0;
-                    }
-                    break;
-            }
-
-            return $this->getComparePrice($price, $this->sale_price);
+        if (!$promotion) {
+            return $this->price;
         }
 
-        $flashSale = FlashSaleFacade::getFacadeRoot()->flashSaleForProduct($this);
-
-        if ($flashSale && $flashSale->pivot->quantity > $flashSale->pivot->sold) {
-            return $this->getComparePrice($flashSale->pivot->price, $this->sale_price ?: $this->price);
+        $price = $this->price;
+        switch ($promotion->type_option) {
+            case 'same-price':
+                $price = $promotion->value;
+                break;
+            case 'amount':
+                $price = $price - $promotion->value;
+                if ($price < 0) {
+                    $price = 0;
+                }
+                break;
+            case 'percentage':
+                $price = $price - ($price * $promotion->value / 100);
+                if ($price < 0) {
+                    $price = 0;
+                }
+                break;
         }
 
-        return $this->getComparePrice($this->price, $this->sale_price);
+        return $price;
     }
 
     /**
@@ -688,7 +716,7 @@ class Product extends BaseModel
      */
     public function createdBy(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo()->withDefault();
     }
 
     /**

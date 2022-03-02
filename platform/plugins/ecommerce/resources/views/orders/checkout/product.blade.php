@@ -6,7 +6,7 @@
         </div>
     </div>
     <div class="col-5">
-        <p class="mb-0">{{ $product->name }}</p>
+        <p class="mb-0">{{ $product->name }} @if ($product->isOutOfStock()) <span class="stock-status-label">({!! $product->stock_status_html !!})</span> @endif</p>
         <p class="mb-0">
             <small>{{ $product->variation_attributes }}</small>
         </p>

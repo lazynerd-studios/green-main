@@ -113,6 +113,7 @@ class HandleShippingFeeService
     {
         $weight = Arr::get($data, 'weight', 0.1);
         $weight = $weight ?: 0.1;
+
         $orderTotal = Arr::get($data, 'order_total', 0);
 
         if (count(EcommerceHelper::getAvailableCountries()) > 1) {
@@ -180,7 +181,6 @@ class HandleShippingFeeService
      */
     protected function calculateDefaultFeeByAddress($address, $weight, $orderTotal, $city, $option = null)
     {
-        $weight = ecommerce_convert_weight($weight);
         $result = [];
 
         if ($address) {

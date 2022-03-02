@@ -141,4 +141,6 @@ return [
     'delete_selected_variations'                     => 'Delete selected variations',
     'delete_variations'                              => 'Delete variations',
     'category'                                       => 'Category',
+    'product_price_flash_sale_warning'               => 'This product is in flash sale <strong>:name</strong> so its price is <strong>:price</strong>.',
+    'product_price_discount_warning'                 => 'This product is in discount <strong>:name</strong> so its price is <strong>:price</strong>.',
 ];

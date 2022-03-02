@@ -66,7 +66,7 @@
                                                             </td>
 
                                                             <td class="product-name" data-title="{{ __('Product Name') }}">
-                                                                <a href="{{ $product->url }}">{{ $product->name }}</a>
+                                                                <a href="{{ $product->url }}">{{ $product->name }} @if ($product->isOutOfStock()) <span class="stock-status-label">({!! $product->stock_status_html !!})</span> @endif</a>
                                                                 <p style="margin-bottom: 0">
                                                                     <span style="display: block;font-style: italic;color:#555555; font-size: .9em;">{{ $cartItem->options['attributes'] ?? '' }}</span>
                                                                 </p>

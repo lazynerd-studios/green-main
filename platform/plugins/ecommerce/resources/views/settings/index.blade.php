@@ -29,7 +29,7 @@
                             <label class="text-title-field" for="store_country">{{ trans('plugins/ecommerce::ecommerce.setting.country') }}</label>
                             <div class="ui-select-wrapper">
                                 <select name="store_country" class="ui-select select-search-full" id="store_country" data-type="country">
-                                    @foreach(['' => trans('plugins/ecommerce::ecommerce.setting.select_country')] + EcommerceHelper::getAvailableCountries() as $countryCode => $countryName)
+                                    @foreach(EcommerceHelper::getAvailableCountries() as $countryCode => $countryName)
                                         <option value="{{ $countryCode }}" @if (get_ecommerce_setting('store_country') == $countryCode) selected @endif>{{ $countryName }}</option>
                                     @endforeach
                                 </select>
@@ -43,7 +43,7 @@
                                 <label class="text-title-field" for="store_state">{{ trans('plugins/ecommerce::ecommerce.setting.state') }}</label>
                                 @if (EcommerceHelper::loadCountriesStatesCitiesFromPluginLocation())
                                     <div class="ui-select-wrapper">
-                                        <select name="store_state" class="ui-select" id="store_state" data-type="state" data-placeholder="{{ __('Select state...') }}" data-url="{{ route('ajax.states-by-country') }}">
+                                        <select name="store_state" class="ui-select" id="store_state" data-type="state" data-url="{{ route('ajax.states-by-country') }}">
                                             <option value="">{{ __('Select state...') }}</option>
                                             @if (get_ecommerce_setting('store_country'))
                                                 @foreach(EcommerceHelper::getAvailableStatesByCountry(get_ecommerce_setting('store_country')) as $stateId => $stateName)
@@ -63,7 +63,7 @@
                                 <label class="text-title-field" for="store_city">{{ trans('plugins/ecommerce::ecommerce.setting.city') }}</label>
                                 @if (EcommerceHelper::loadCountriesStatesCitiesFromPluginLocation())
                                     <div class="ui-select-wrapper">
-                                        <select name="store_city" class="ui-select" id="store_city" data-type="city" data-placeholder="{{ __('Select city...') }}" data-url="{{ route('ajax.cities-by-state') }}">
+                                        <select name="store_city" class="ui-select" id="store_city" data-type="city" data-url="{{ route('ajax.cities-by-state') }}">
                                             <option value="">{{ __('Select city...') }}</option>
                                             @if (get_ecommerce_setting('store_state'))
                                                 @foreach(EcommerceHelper::getAvailableCitiesByState(get_ecommerce_setting('store_state')) as $cityId => $cityName)

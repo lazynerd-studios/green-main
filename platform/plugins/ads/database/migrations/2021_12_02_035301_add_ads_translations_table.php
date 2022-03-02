@@ -12,15 +12,17 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('ads_translations', function (Blueprint $table) {
-            $table->string('lang_code');
-            $table->integer('ads_id');
-            $table->string('name', 255)->nullable();
-            $table->string('image', 255)->nullable();
-            $table->string('url', 255)->nullable();
+        if (!Schema::hasTable('ads_translations')) {
+            Schema::create('ads_translations', function (Blueprint $table) {
+                $table->string('lang_code');
+                $table->integer('ads_id');
+                $table->string('name', 255)->nullable();
+                $table->string('image', 255)->nullable();
+                $table->string('url', 255)->nullable();
 
-            $table->primary(['lang_code', 'ads_id'], 'ads_translations_primary');
-        });
+                $table->primary(['lang_code', 'ads_id'], 'ads_translations_primary');
+            });
+        }
     }
 
     /**

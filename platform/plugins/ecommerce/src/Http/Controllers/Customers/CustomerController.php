@@ -277,6 +277,14 @@ class CustomerController extends BaseController
 
         $address = $this->addressRepository->createOrUpdate($request->input());
 
+        $address->country = $address->country_name;
+        $address->state = $address->state_name;
+        $address->city = $address->city_name;
+
+        $address->country_name = $address->country;
+        $address->state_name = $address->state;
+        $address->city_name = $address->city;
+
         return $response
             ->setData(compact('address', 'customer'))
             ->setMessage(trans('core/base::notices.create_success_message'));

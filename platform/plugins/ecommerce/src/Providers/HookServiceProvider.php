@@ -5,8 +5,11 @@ namespace Botble\Ecommerce\Providers;
 use Assets;
 use Botble\Base\Enums\BaseStatusEnum;
 use Botble\Dashboard\Supports\DashboardWidgetInstance;
+use Botble\Ecommerce\Facades\DiscountFacade;
+use Botble\Ecommerce\Facades\FlashSaleFacade;
 use Botble\Ecommerce\Models\Brand;
 use Botble\Ecommerce\Models\Customer;
+use Botble\Ecommerce\Models\FlashSale;
 use Botble\Ecommerce\Models\Product;
 use Botble\Ecommerce\Models\ProductCategory;
 use Botble\Ecommerce\Repositories\Interfaces\CustomerInterface;
@@ -358,6 +361,52 @@ class HookServiceProvider extends ServiceProvider
 
             }, 139, 2);
         });
+
+        add_action(BASE_ACTION_TOP_FORM_CONTENT_NOTIFICATION, function ($request, $data = null) {
+            if (!$data instanceof Product || !in_array(Route::currentRouteName(), ['products.edit'])) {
+                return false;
+            }
+
+            $flashSale = null;
+
+            $flashSalePrice = $data->getFlashSalePrice();
+
+            if ($flashSalePrice != $data->price) {
+                $flashSale = FlashSaleFacade::getFacadeRoot()->flashSaleForProduct($data);
+
+                if ($flashSale) {
+                    $flashSale = FlashSale::find($flashSale->pivot->flash_sale_id);
+                }
+            }
+
+            $discount = null;
+
+            $discountPrice = $data->getDiscountPrice();
+
+            if ($discountPrice != $data->price) {
+
+                if ($discountPrice < $flashSalePrice) {
+                    $flashSale = null;
+
+                    if (!$data->is_variation) {
+                        $productCollections = $data->productCollections;
+                    } else {
+                        $productCollections = $data->original_product->productCollections;
+                    }
+
+                    $discount = DiscountFacade::getFacadeRoot()
+                        ->promotionForProduct([$data->id], $productCollections->pluck('id')->all());
+                }
+            }
+
+            if ($flashSale || $discount) {
+                echo view('plugins/ecommerce::products.partials.product-price-warning', compact('flashSale', 'discount', 'data'))
+                    ->render();
+            }
+
+            return true;
+        }
+        , 145, 2);
     }
 
     public function addThemeOptions()

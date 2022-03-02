@@ -46,6 +46,11 @@ class ProductAttributeSetForm extends FormAbstract
                     'data-counter' => 120,
                 ],
             ])
+            ->add('use_image_from_product_variation', 'onOff', [
+                'label'         => trans('plugins/ecommerce::product-attribute-sets.use_image_from_product_variation'),
+                'label_attr'    => ['class' => 'control-label'],
+                'default_value' => false,
+            ])
             ->add('status', 'customSelect', [
                 'label'      => trans('core/base::tables.status'),
                 'label_attr' => ['class' => 'control-label required'],

@@ -167,6 +167,8 @@ class EcommerceHelper
      */
     public function getAvailableCountries(): array
     {
+        $countries = ['' => __('Select country...')];
+
         if ($this->loadCountriesStatesCitiesFromPluginLocation()) {
             $selectedCountries = app(CountryInterface::class)
                 ->getModel()
@@ -176,7 +178,7 @@ class EcommerceHelper
                 ->all();
 
             if (!empty($selectedCountries)) {
-                return $selectedCountries;
+                return $countries + $selectedCountries;
             }
         }
 
@@ -187,10 +189,8 @@ class EcommerceHelper
         }
 
         if (empty($selectedCountries)) {
-            return Helper::countries();
+            return $countries + Helper::countries();
         }
-
-        $countries = [];
 
         foreach (Helper::countries() as $key => $item) {
             if (in_array($key, $selectedCountries)) {

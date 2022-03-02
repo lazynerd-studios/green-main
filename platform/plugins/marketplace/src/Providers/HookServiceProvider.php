@@ -94,7 +94,7 @@ class HookServiceProvider extends ServiceProvider
             }
 
             add_action(BASE_ACTION_TOP_FORM_CONTENT_NOTIFICATION, [$this, 'createdByVendorNotification'], 45, 2);
-            add_action(BASE_ACTION_TOP_FORM_CONTENT_NOTIFICATION, [$this, 'WithdrawalVendorNotification'], 47, 2);
+            add_action(BASE_ACTION_TOP_FORM_CONTENT_NOTIFICATION, [$this, 'withdrawalVendorNotification'], 47, 2);
 
             add_filter(ACTION_BEFORE_POST_ORDER_REFUND_ECOMMERCE, [$this, 'beforeOrderRefund'], 120, 3);
             add_filter(ACTION_AFTER_POST_ORDER_REFUNDED_ECOMMERCE, [$this, 'afterOrderRefunded'], 120, 3);
@@ -619,7 +619,7 @@ class HookServiceProvider extends ServiceProvider
      * @param null $data
      * @return bool
      */
-    public function WithdrawalVendorNotification($request, $data = null)
+    public function withdrawalVendorNotification($request, $data = null)
     {
         if (!$data instanceof Withdrawal || !in_array(Route::currentRouteName(), ['marketplace.withdrawal.edit'])) {
             return false;

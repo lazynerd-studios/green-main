@@ -63,7 +63,7 @@ class RenderProductSwatchesSupport
 
         $productVariations = app(ProductVariationInterface::class)->allBy([
             'configurable_product_id' => $product->id,
-        ]);
+        ], ['product', 'productAttributes']);
 
         $productVariationsInfo = app(ProductVariationItemInterface::class)
                     ->getVariationsInfo($productVariations->pluck('id')->toArray());

@@ -31,7 +31,7 @@ class PageSeeder extends BaseSeeder
         $popularProducts = Html::tag('div', '[popular-products title="Popular Products" per_row="4" limit="8"][/popular-products]');
         $bestFlashSale = Html::tag('div',
             '[best-flash-sale title="Daily Best Sells" flash_sale_id="6" ads="IZ6WU8KUALYG"][/best-flash-sale]');
-        $topProductsGroup = Html::tag('div', '[top-products-group][/top-products-group]');
+        $topProductsGroup = Html::tag('div', '[top-products-group tabs="top-selling,trending-products,recent-added,top-rated" top_selling_in_days="365"][/top-products-group]');
         $flashSale = Html::tag('div',
             '[flash-sale flash_sale_1="2" flash_sale_2="3" flash_sale_3="4" flash_sale_4="5" title="Deals Of The Day" flash_sale_popup_id="1"][/flash-sale]');
         $simpleSlider1 = Html::tag('div',
@@ -232,7 +232,7 @@ class PageSeeder extends BaseSeeder
         $popularProducts = Html::tag('div', '[popular-products title="Sản phẩm phổ biến" per_row="4" limit="8"][/popular-products]');
         $bestFlashSale = Html::tag('div',
             '[best-flash-sale title="Bán chạy nhất hàng ngày" flash_sale_id="6" ads="IZ6WU8KUALYG"][/best-flash-sale]');
-        $topProductsGroup = Html::tag('div', '[top-products-group][/top-products-group]');
+        $topProductsGroup = Html::tag('div', '[top-products-group tabs="top-selling,trending-products,recent-added,top-rated" top_selling_in_days="365"][/top-products-group]');
         $flashSale = Html::tag('div',
             '[flash-sale flash_sale_1="2" flash_sale_2="3" flash_sale_3="4" flash_sale_4="5" title="Ưu đãi trong ngày" flash_sale_popup_id="1"][/flash-sale]');
         $simpleSlider1 = Html::tag('div',

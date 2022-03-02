@@ -18,7 +18,8 @@ class ProductRequest extends Request
     {
         return [
             'name'       => 'required|max:120',
-            'price'      => 'numeric|nullable|min:0|max:100000000',
+            'price'      => 'numeric|nullable|min:0|max:100000000000',
+            'sale_price' => 'numeric|nullable|min:0|max:100000000000',
             'start_date' => 'date|nullable|required_if:sale_type,1',
             'end_date'   => 'date|nullable|after:' . ($this->input('start_date') ?? now()->toDateTimeString()),
             'wide'       => 'numeric|nullable|min:0|max:100000000',
